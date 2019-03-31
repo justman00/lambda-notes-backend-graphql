@@ -1,7 +1,9 @@
 type Query {
   users(query: String): [User!]!
   me: User!
-  notes(query: String): [Note!]
+  notes(query: String): [Note!]!
+  myNotes: [Note!]!
+  note(query: ID!): Note!
 }
 
 type Mutation {

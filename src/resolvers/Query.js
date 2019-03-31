@@ -26,6 +26,27 @@ const Query = {
   },
   notes(parent, args, { prisma }, info) {
     return prisma.query.notes({}, info);
+  },
+  myNotes(parent, args, { prisma, request }, info) {
+    const userId = getUserId(request);
+
+    return prisma.query.notes({
+      where: {
+        author: {
+          id: userId
+        }
+      }
+    });
+  },
+  note(parent, { query }, { prisma }, info) {
+    return prisma.query.note(
+      {
+        where: {
+          id: query
+        }
+      },
+      info
+    );
   }
 };
 
