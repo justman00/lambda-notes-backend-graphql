@@ -5,4 +5,13 @@ type User {
   name: String!
   email: String! @unique
   password: String!
+  notes: [Note!]! @relation(name: "UserToNotes", onDelete: CASCADE)
+}
+
+type Note {
+  id: ID! @unique
+  title: String!
+  body: String!
+  tags: [String!]
+  author: User! @relation(name: "UserToNotes", onDelete: SET_NULL)
 }

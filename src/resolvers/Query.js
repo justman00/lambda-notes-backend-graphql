@@ -23,6 +23,9 @@ const Query = {
         id: userId
       }
     });
+  },
+  notes(parent, args, { prisma }, info) {
+    return prisma.query.notes({}, info);
   }
 };
 

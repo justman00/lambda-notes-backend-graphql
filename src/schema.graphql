@@ -1,6 +1,7 @@
 type Query {
   users(query: String): [User!]!
   me: User!
+  notes(query: String): [Note!]
 }
 
 type Mutation {
@@ -9,6 +10,10 @@ type Mutation {
   updateUser(data: UpdateUserInput!): User!
 
   login(data: AuthInput!): AuthPayload!
+
+  createNote(data: CreateNoteInput!): Note!
+  updateNote(id: ID!, data: UpdateNoteInput!): Note!
+  deleteNote(id: ID!): Note!
 }
 
 # type Subscription {}
@@ -34,11 +39,32 @@ input UpdateUserInput {
   email: String
 }
 
+input CreateNoteInput {
+  title: String!
+  body: String!
+  tags: [String!]
+}
+
+input UpdateNoteInput {
+  title: String
+  body: String
+  tags: [String!]
+}
+
 type User {
   id: ID!
   name: String!
   email: String
   password: String!
+  notes: [Note!]!
+}
+
+type Note {
+  id: ID!
+  title: String!
+  body: String!
+  tags: [String!]
+  author: User!
 }
 
 enum MutationType {

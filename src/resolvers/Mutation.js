@@ -63,6 +63,35 @@ const Mutation = {
       },
       info
     );
+  },
+  createNote(parent, { data }, { prisma }, info) {
+    return prisma.mutation.createNote(
+      {
+        data: {
+          ...data,
+          tags: {
+            set: data.tags
+          }
+        }
+      },
+      info
+    );
+  },
+  updateNote(parent, { data, id }, { prisma }, info) {
+    return prisma.mutation.updateNote(
+      {
+        where: {
+          id
+        },
+        data: {
+          ...data,
+          tags: {
+            set: data.tags
+          }
+        }
+      },
+      info
+    );
   }
 };
 
