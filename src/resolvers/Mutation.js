@@ -64,21 +64,41 @@ const Mutation = {
       info
     );
   },
-  createNote(parent, { data }, { prisma }, info) {
+  createNote(parent, { data }, { prisma, request }, info) {
+    const userId = getUserId(request);
+
     return prisma.mutation.createNote(
       {
         data: {
           ...data,
           tags: {
             set: data.tags
+          },
+          author: {
+            connect: {
+              id: userId
+            }
           }
         }
       },
       info
     );
   },
-  updateNote(parent, { data, id }, { prisma }, info) {
-    return prisma.mutation.updateNote(
+  async updateNote(parent, { data, id }, { prisma, request }, info) {
+    const userId = getUserId(request);
+
+    const noteExists = await prisma.exists.Note({
+      id,
+      author: {
+        id: userId
+      }
+    });
+
+    if (!noteExists) {
+      throw new Error("Unauthorized");
+    }
+
+    const updatedNote = await prisma.mutation.updateNote(
       {
         where: {
           id
@@ -88,6 +108,31 @@ const Mutation = {
           tags: {
             set: data.tags
           }
+        }
+      },
+      info
+    );
+
+    return updatedNote;
+  },
+  async deleteNote(parent, { id }, { prisma, request }, info) {
+    const userId = getUserId(request);
+
+    const noteExists = await prisma.exists.Note({
+      id,
+      author: {
+        id: userId
+      }
+    });
+
+    if (!noteExists) {
+      throw new Error("Note does not exist");
+    }
+
+    return prisma.mutation.deleteNote(
+      {
+        where: {
+          id
         }
       },
       info
